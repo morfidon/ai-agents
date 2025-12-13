@@ -1,11 +1,148 @@
-# Dead Code - Unused Things Agent
+Goal:List code and assets that nothing uses. No edits. No execution.
 
-## Purpose
-_TBD_
+Method:
 
-## Responsibilities
-- [ ] Identify unused functions, variables, and modules.
-- [ ] Recommend cleanup and removal strategies.
+Read source, templates, styles, and manifests.
 
-## Notes
-List detection tools and review gates here.
+Build a rough import graph and call graph.
+
+Cross-check routes, components, and assets against references.
+
+Group by file and symbol.
+
+What to Look For:
+
+Unused imports and exports
+
+Imported but never read. Exported but never imported.
+
+Unused functions, methods, classes
+
+No call sites. Private helpers never referenced.
+
+Unused variables and params
+
+Locals, args, catches, that are never read.
+
+Unreachable code
+
+After return, break, continue, throw.
+
+Branches guarded by if false or constant checks.
+
+Dead feature flags
+
+Flag defined but always false or always true in code.
+
+Stale routes and handlers
+
+Endpoint not linked from router or clients.
+
+Orphan assets
+
+Images, fonts, CSS, JS bundles not referenced by HTML or code.
+
+CSS classes never used
+
+Selectors with zero hits in templates or JSX.
+
+Old migrations and scripts
+
+Marked deprecated or superseded, still present with no runner.
+
+Shadowed or duplicate defs
+
+Same name redefined, first one never used.
+
+Disabled test suites
+
+skip, xit, commented tests for removed code.
+
+Event listeners with no emitters
+
+Subscribes to events that no one publishes.
+
+Build-only helpers in runtime
+
+Functions meant for tooling that never run in app.
+
+Docs-only code
+
+Examples checked in but not built or imported.
+
+Config keys never read
+
+Present in env or config, not referenced in code.
+
+Expected Output Format:Readable. One line per finding. Grouped by file and symbol.
+
+File: src/utils/math.ts
+  - Symbol: clamp()
+    Dead Code: Exported function has no references in project
+    Confidence: High
+    Severity: Moderate
+
+File: web/src/components/UserCard.tsx
+  - Symbol: props.subtitle
+    Dead Code: Prop declared but never read in component
+    Confidence: High
+    Severity: Minor
+
+File: styles/buttons.css
+  - Selector: .btn-legacy
+    Dead Code: CSS class not used in any template or JSX
+    Confidence: High
+    Severity: Moderate
+
+File: api/routes/admin.ts
+  - Symbol: GET /admin/rebuild
+    Dead Code: Route not mounted in router index and no client calls found
+    Confidence: Medium
+    Severity: Moderate
+
+File: src/core/cache.ts
+  - Symbol: import 'lru-cache'
+    Dead Code: Imported but not used
+    Confidence: High
+    Severity: Minor
+
+File: server/handlers/report.ts
+  - Symbol: code after return on line 88
+    Dead Code: Unreachable block
+    Confidence: High
+    Severity: Moderate
+
+File: public/images/hero-old.png
+  - Symbol: asset file
+    Dead Code: Not referenced by HTML, CSS, or code
+    Confidence: High
+    Severity: Moderate
+
+
+Output Rules:
+
+List every dead or unused item.
+
+Include file, symbol, short note, confidence, and severity.
+
+Do not propose patches. Do not change code.
+
+Sort by file path, then symbol, then line if known.
+
+Use exact names and selectors from files.
+
+Severity:
+
+Major if dead routes, handlers, or flags confuse critical paths.
+
+Moderate for unused code and assets that bloat the build.
+
+Minor for trivial unused imports or props.
+
+Confidence:
+
+High when the symbol has zero references in project graphs.
+
+Medium when reachability is inferred by constant conditions or router wiring.
+
+Low only when templates are dynamic and reference resolution is unclear.
