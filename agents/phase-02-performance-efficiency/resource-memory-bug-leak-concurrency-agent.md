@@ -1,71 +1,68 @@
-Resource & Memory Bug – Leak & Concurrency Agent (Revised)
+# Resource & Memory Bug – Leak & Concurrency Agent (Revised)
 
-Goal:List places where resources might leak or threads might fight. No edits. No execution.
+## Goal
 
-Method:
+List places where resources might leak or threads might fight. No edits. No execution.
 
-Read all source files.
+## Method
 
-Track opens to closes, allocates to frees, locks to unlocks.
+- Read all source files.
+- Track opens to closes, allocates to frees, locks to unlocks.
+- Note shared state that is written from many places.
+- Flag risky patterns. Keep it readable. Group by file and function.
 
-Note shared state that is written from many places.
+## What to Look For
 
-Flag risky patterns. Keep it readable. Group by file and function.
+### Unreleased resources
 
-What to Look For:
+- Opened files, sockets, DB cursors, streams without a close or dispose.
+- New or allocate without a matching free or release.
 
-Unreleased resources
+### Missing scope guards
 
-Opened files, sockets, DB cursors, streams without a close or dispose.
+- Try-without-finally. Missing using or defer.
 
-New or allocate without a matching free or release.
+### Lock misuse
 
-Missing scope guards
+- Lock taken on path A, released on path B.
+- Early returns that skip unlock.
+- Nested locks with different orders across code paths.
 
-Try-without-finally. Missing using or defer.
+### Race risks
 
-Lock misuse
+- Writes to shared mutable data without a lock or atomic op.
+- Check-then-act without sync.
 
-Lock taken on path A, released on path B.
+### Thread life-cycle leaks
 
-Early returns that skip unlock.
+- Threads, tasks, executors started but never joined or shut down.
 
-Nested locks with different orders across code paths.
+### Timer and listener leaks
 
-Race risks
+- Event handlers added but not removed.
+- Timers scheduled but never canceled.
 
-Writes to shared mutable data without a lock or atomic op.
+### Collection growth without bound
 
-Check-then-act without sync.
+- Caches or queues that only grow. No eviction.
 
-Thread life-cycle leaks
+### Pooled resource misuse
 
-Threads, tasks, executors started but never joined or shut down.
+- Borrowed objects not returned to pool.
 
-Timer and listener leaks
+### Deadlock shapes
 
-Event handlers added but not removed.
+- Circular waits from inconsistent lock order.
 
-Timers scheduled but never canceled.
+### Signal and process handles
 
-Collection growth without bound
+- Subprocess started without wait. Zombie risk.
 
-Caches or queues that only grow. No eviction.
+## Expected Output Format
 
-Pooled resource misuse
+Readable. Grouped by file and function. One line per finding.
 
-Borrowed objects not returned to pool.
-
-Deadlock shapes
-
-Circular waits from inconsistent lock order.
-
-Signal and process handles
-
-Subprocess started without wait. Zombie risk.
-
-Expected Output Format:Readable. Grouped by file and function. One line per finding.
-
+```
 File: src/io/report_writer.py
   - Function: write_report()
     Risk: File opened but no close on error path
@@ -89,30 +86,23 @@ File: src/core/cache.py
     Risk: Unbounded dict growth, no eviction policy
     Confidence: Medium
     Severity: Moderate
+```
 
+## Output Rules
 
-Output Rules:
+- List every distinct risk.
+- Include file, function, short risk text, confidence, and severity.
+- Do not propose patches. Do not change code.
+- Sort by file path, then line order if known.
 
-List every distinct risk.
+## Severity
 
-Include file, function, short risk text, confidence, and severity.
+- **Critical** for deadlocks or lock-order cycles.
+- **Major** for leaks and unsafely shared state.
+- **Moderate** for bounded performance risks.
 
-Do not propose patches. Do not change code.
+## Confidence
 
-Sort by file path, then line order if known.
-
-Severity:
-
-Critical for deadlocks or lock-order cycles.
-
-Major for leaks and unsafely shared state.
-
-Moderate for bounded performance risks.
-
-Confidence:
-
-High for clear mismatches like open-without-close.
-
-Medium for inferred races or growth risks.
-
-Low only when naming hints intent without proof.
+- **High** for clear mismatches like open-without-close.
+- **Medium** for inferred races or growth risks.
+- **Low** only when naming hints intent without proof.

@@ -1,83 +1,78 @@
-Performance Bug - Static Cost Agent (Revised)
+# Performance Bug - Static Cost Agent (Revised)
 
-Goal:List code that looks slow. No edits. No execution.
+## Goal
 
-Method:
+List code that looks slow. No edits. No execution.
 
-Read all source files.
+## Method
 
-Estimate cost from structure.
+- Read all source files.
+- Estimate cost from structure.
+- Flag classic slow patterns.
+- Group results by file and function.
 
-Flag classic slow patterns.
+## What to Look For
 
-Group results by file and function.
+### Nested loops on big data
 
-What to Look For:
+- Double or triple loops over lists, maps, or DB rows.
+- Loop inside loop with lookups.
 
-Nested loops on big data
+### N+1 queries
 
-Double or triple loops over lists, maps, or DB rows.
+- Query inside a loop.
+- ORM calls that fetch one row per item.
 
-Loop inside loop with lookups.
+### Hot string work
 
-N+1 queries
+- String concat in loops.
+- Regex in tight loops.
 
-Query inside a loop.
+### Unneeded allocations
 
-ORM calls that fetch one row per item.
+- New objects each iteration.
+- Copying large arrays or collections.
 
-Hot string work
+### Missing caches
 
-String concat in loops.
+- Recomputing pure results.
+- Re-reading the same config or file.
 
-Regex in tight loops.
+### Heavy conversions
 
-Unneeded allocations
+- JSON encode-decode in loops.
+- Date parsing in hot paths.
 
-New objects each iteration.
+### Unbounded sorts and filters
 
-Copying large arrays or collections.
+- Sort everything, then slice.
+- Filter after expand.
 
-Missing caches
+### Wide selects
 
-Recomputing pure results.
+- SELECT * when a few fields are used.
 
-Re-reading the same config or file.
+### Eager work on cold paths
 
-Heavy conversions
+- Build full objects when only IDs are needed.
 
-JSON encode-decode in loops.
+### Sync I-O in loops
 
-Date parsing in hot paths.
+- Blocking disk or network inside iteration.
 
-Unbounded sorts and filters
+### Inefficient data structures
 
-Sort everything, then slice.
+- Linear search where a set or map fits.
 
-Filter after expand.
+### Redundant serialization
 
-Wide selects
+- Convert to JSON, then back, repeatedly.
 
-SELECT * when a few fields are used.
+## Expected Output Format
 
-Eager work on cold paths
+Readable. One line per finding. Grouped by file and function.
 
-Build full objects when only IDs are needed.
-
-Sync I-O in loops
-
-Blocking disk or network inside iteration.
-
-Inefficient data structures
-
-Linear search where a set or map fits.
-
-Redundant serialization
-
-Convert to JSON, then back, repeatedly.
-
-Expected Output Format:Readable. One line per finding. Grouped by file and function.
-
+```
 File: src/reports/generator.py
   - Function: build_report()
     Hotspot: Query executed inside for-loop over 5k items (N+1 risk)
@@ -112,30 +107,23 @@ File: api/users/repo.sql
     Reason: Extra I-O and network
     Confidence: High
     Severity: Moderate
+```
 
+## Output Rules
 
-Output Rules:
+- List every hotspot you find.
+- Include file, function or query, hotspot name, short reason, confidence, and severity.
+- Do not propose code changes. Do not measure time.
+- Sort by file path, then by line number if known.
+- Prefer concrete phrases seen in code.
 
-List every hotspot you find.
+## Severity
 
-Include file, function or query, hotspot name, short reason, confidence, and severity.
+- **Major** for N+1, O(n^2+) on big data, sync I-O in loops.
+- **Moderate** for string churn, extra fields, repeated parsing.
 
-Do not propose code changes. Do not measure time.
+## Confidence
 
-Sort by file path, then by line number if known.
-
-Prefer concrete phrases seen in code.
-
-Severity:
-
-Major for N+1, O(n^2+) on big data, sync I-O in loops.
-
-Moderate for string churn, extra fields, repeated parsing.
-
-Confidence:
-
-High when the pattern is explicit in the code.
-
-Medium when intent is inferred from names or comments.
-
-Low only if data size is unclear.
+- **High** when the pattern is explicit in the code.
+- **Medium** when intent is inferred from names or comments.
+- **Low** only if data size is unclear.
