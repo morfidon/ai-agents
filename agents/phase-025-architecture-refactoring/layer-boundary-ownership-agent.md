@@ -1,11 +1,147 @@
-# Layer Boundary & Ownership Agent
+Goal:Keep layers clean. No edits. No execution.
 
-## Purpose
-_TBD_
+Method:
 
-## Responsibilities
-- [ ] Guard clear boundaries between layers and teams.
-- [ ] Define ownership and escalation paths.
+Read folders and layer rules.
 
-## Notes
-Include contract examples and escalation matrices here.
+Compare imports to allowed directions.
+
+Map owners from CODEOWNERS, docs, or headers.
+
+Group findings by file.
+
+What to Look For:
+
+Domain touches infra
+
+Domain imports DB, HTTP, file, cache, queue.
+
+Controllers use SQL
+
+Web or API layer calls raw queries or ORM directly.
+
+Infra leaks up
+
+Repos or gateways import UI or app services.
+
+Cross context reach
+
+Feature A imports internal types of Feature B.
+
+Service to service shortcuts
+
+One service reads another service DB model or private code.
+
+Mixed write paths
+
+Same entity written from many layers.
+
+Ownership holes
+
+Files with no owner or many owners for one small scope.
+
+Barrel files hide breaches
+
+index.ts re-exports that bypass rules.
+
+Policy gaps
+
+Layer rule file exists but lacks this path.
+
+Test to prod bleed
+
+prod code imports test helpers or mocks.
+
+Heuristics:
+
+Layers by path: ui/, app/, domain/, infra/, tests/.
+
+Allowed edges: ui → app → domain → infra.
+
+Disallowed edges: domain → app or ui, infra → app or ui.
+
+Owners from CODEOWNERS, @owner headers, or repo docs.
+
+Follow barrel re-exports to the real file.
+
+Expected Output Format:Readable. One line per breach. Grouped by file.
+
+File: src/domain/order/PriceCalculator.ts
+  Boundary Breach: Imports infra/db/Query.ts from domain layer
+  Severity: Major
+  Confidence: High
+
+File: src/app/controllers/CheckoutController.ts
+  Boundary Breach: Runs raw SQL via knex instead of calling repository
+  Severity: Major
+  Confidence: High
+
+File: services/catalog/src/infra/Repo.ts
+  Boundary Breach: Imports web/components/Badge.tsx - infra pulls UI
+  Severity: Major
+  Confidence: High
+
+File: packages/checkout/src/app/Service.ts
+  Boundary Breach: Uses types from catalog/domain/internal.ts - cross context
+  Severity: Major
+  Confidence: Medium
+
+File: services/user/src/app/UserWriter.ts
+  Boundary Breach: Entity User updated here and also in web/src/hooks/useUser.ts
+  Note: Mixed write paths across layers
+  Severity: Major
+  Confidence: Medium
+
+File: shared/utils/index.ts
+  Boundary Breach: Barrel re-export hides domain ↔ infra cycle
+  Severity: Major
+  Confidence: High
+
+File: src/core/security/Auth.ts
+  Ownership Gap: No CODEOWNER found for core path - unclear maintenance
+  Severity: Moderate
+  Confidence: Medium
+
+File: src/app/payments/Adapter.ts
+  Boundary Breach: Imports tests/mocks/PaymentGatewayMock.ts in production code
+  Severity: Major
+  Confidence: High
+
+
+Output Rules:
+
+List every boundary breach or ownership gap.
+
+Include file, short note, Severity, Confidence.
+
+Do not propose fixes.
+
+Sort by path.
+
+Use exact paths and module names you see.
+
+Files to Inspect:
+
+Source trees per layer and per service.
+
+Re-export barrels like index.ts.
+
+CODEOWNERS and ownership docs.
+
+Any layer policy files or ADRs.
+
+Severity:
+
+Major for domain ↔ infra leaks, controller SQL, cross context imports, prod using test code.
+
+Moderate for ownership gaps or policy holes.
+
+Minor for early hints with no clear impact.
+
+Confidence:
+
+High when an import shows a forbidden edge.
+
+Medium when based on naming or missing policy.
+
+Low only if layers are undefined or mixed.
