@@ -1,146 +1,130 @@
-Goal:Find cycles and bad directions. No edits. No execution.
+Goal:Cut tight links. Group code that belongs together. No edits. No execution.
 
 Method:
 
-Read imports in each package or service.
+Read each module’s public API.
 
-Build a graph: who imports whom.
+Read who calls whom inside.
 
-Mark layers if present: ui, app, domain, infra, test.
+Count fan-in and fan-out.
 
-Report cycles. Report wrong edges. Group by package.
+Note clusters that always travel together.
+
+Group findings by module.
 
 What to Look For:
 
-Import cycles
+Tight coupling
 
-A → B → C → A.
+Module imports many others to do one task.
 
-Small or large. In core code or shared libs.
+Changes in one file force changes in many files.
 
-Upward dependencies
+Wide fan-in hubs
 
-domain → ui.
+Many modules depend on one unstable helper.
 
-infra → ui.
+Wide fan-out spokes
 
-core layers importing higher layers.
+One module depends on many unrelated modules.
 
-Test to prod leaks
+Low cohesion
 
-src imports from test or mocks.
+Module exposes many unrelated functions.
 
-Cross-context bleed
+Public API mixes concerns.
 
-One bounded context imports another’s internals.
+Feature scattered
 
-Barrel traps
+One feature’s flow jumps across many small files.
 
-index.ts re-exports that hide cycles.
+Utility dumping ground
 
-Wide hubs
+utils or common folder with everything inside.
 
-One module with huge fan-in or fan-out.
+Leaky abstractions
 
-Platform-only edges
+Callers know too much about internals.
 
-Server code importing browser-only modules.
+Chatty neighbors
 
-Feature flip-flop
+Two modules call each other many times per flow.
 
-Two features import each other. Hidden bidirectional tie.
+Barrel re-export bloat
+
+index.ts exposes more than needed.
+
+DTO and helper clones
+
+Same shapes repeated in many modules.
 
 Heuristics:
 
-Layer map by path names: ui/, app/, domain/, infra/, tests/.
+Fan-in: how many modules import this one.
 
-Graph SCCs for cycles.
+Fan-out: how many modules this one imports.
 
-Fan-in and fan-out counts.
+API width: number of public symbols.
 
-Barrel resolution: follow re-exports.
+Change surface: files in the same commits often.
 
-Test paths: __tests__, spec, test.
+Name hints: utils, common, shared.
 
-Expected Output Format:Readable. One line per edge problem. Group by package.
+Expected Output Format:Readable. One line per finding. Grouped by module.
 
-Package: packages/cart
-  From → To: cart/domain/Price.ts → cart/ui/PriceWidget.tsx
-  Note: Upward dependency - domain imports ui
-  Confidence: High
+Module: src/orders/PriceEngine.ts
+  Note: High fan-out - imports 11 modules for one compute flow
   Severity: Major
-
-Package: services/checkout
-  From → To: checkout/app/Service.ts → checkout/domain/Rules.ts → checkout/infra/Repo.ts → checkout/app/Service.ts
-  Note: 3-node import cycle across layers
-  Confidence: High
-  Severity: Major
-
-Package: web
-  From → To: src/app/router.ts → src/app/index.ts (via src/app/index.ts re-exports)
-  Note: Barrel hides self-cycle
-  Confidence: High
-  Severity: Major
-
-Package: core
-  From → To: core/src/index.ts → core/tests/helpers.ts
-  Note: Prod code imports test helper - test-to-prod leak
-  Confidence: High
-  Severity: Major
-
-Package: catalog
-  From → To: catalog/domain/models.ts → checkout/domain/models.ts
-  Note: Cross-context import - violates bounded context ADR-007
   Confidence: Medium
-  Severity: Major
 
-Package: shared
-  From → To: shared/utils/index.ts → shared/utils/date.ts → shared/utils/index.ts
-  Note: Small cycle inside shared utils
-  Confidence: High
+Module: src/shared/utils/index.ts
+  Note: Utility dumping ground - 38 exports across unrelated domains
+  Severity: Major
+  Confidence: Medium
+
+Module: packages/catalog/src/index.ts
+  Note: Barrel re-exports all internals - public API too wide
   Severity: Moderate
+  Confidence: Medium
 
-Package: api
-  From → To: api/infra/fs.ts → api/ui/upload.ts
-  Note: Server module imports browser-only code
-  Confidence: High
+Module: src/payments/GatewayAdapter.ts
+  Note: Chatty neighbors - tight loop of calls with RetryPolicy.ts
+  Severity: Moderate
+  Confidence: Medium
+
+Module: src/users/profile/
+  Note: Feature scattered - read, write, validate split across 7 tiny files
+  Severity: Moderate
+  Confidence: Medium
+
+Module: src/core/strings.ts
+  Note: Wide fan-in hub but unstable - many callers break on small changes
   Severity: Major
+  Confidence: Medium
 
 
 Output Rules:
 
-List every cycle and bad direction.
+List every coupling or cohesion issue.
 
-Include package, From → To, short note, Confidence, Severity.
+Include module, short note, Severity, Confidence.
 
-Do not propose fixes. Do not change imports.
+Do not propose refactors.
 
-Sort by package, then by path.
+Sort by path.
 
-Use exact paths and filenames you see.
-
-Files to Inspect:
-
-All src trees per package.
-
-Barrel files like index.ts or mod.rs.
-
-Test folders and mocks.
-
-ADRs that define layer and context rules.
+Use exact module names you see.
 
 Severity:
 
-Major for cycles in core packages, layer violations, test-to-prod leaks, server importing browser code.
+Major for high fan-in hubs that change often, high fan-out spokes in core flows, and giant utility dumps.
 
-Moderate for small cycles in non-core utils.
-
-Minor for hub modules only if no rule is broken.
+Moderate for scattered features, wide barrels, and chatty pairs.
 
 Confidence:
 
-High for explicit import edges and SCCs.
+Medium by default - structure based.
 
-Medium when a rule relies on ADR naming or folder hints.
+Raise to High if fan-in or fan-out is extreme or confirmed by commit history.
 
-Low only if layers are undefined or mixed.
+Lower only if module boundaries are unclear.
