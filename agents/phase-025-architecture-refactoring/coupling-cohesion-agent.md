@@ -1,11 +1,146 @@
-# Coupling & Cohesion Agent
+Goal:Find cycles and bad directions. No edits. No execution.
 
-## Purpose
-_TBD_
+Method:
 
-## Responsibilities
-- [ ] Evaluate coupling and cohesion across modules.
-- [ ] Recommend design adjustments for maintainability.
+Read imports in each package or service.
 
-## Notes
-Provide metrics and refactoring patterns here.
+Build a graph: who imports whom.
+
+Mark layers if present: ui, app, domain, infra, test.
+
+Report cycles. Report wrong edges. Group by package.
+
+What to Look For:
+
+Import cycles
+
+A → B → C → A.
+
+Small or large. In core code or shared libs.
+
+Upward dependencies
+
+domain → ui.
+
+infra → ui.
+
+core layers importing higher layers.
+
+Test to prod leaks
+
+src imports from test or mocks.
+
+Cross-context bleed
+
+One bounded context imports another’s internals.
+
+Barrel traps
+
+index.ts re-exports that hide cycles.
+
+Wide hubs
+
+One module with huge fan-in or fan-out.
+
+Platform-only edges
+
+Server code importing browser-only modules.
+
+Feature flip-flop
+
+Two features import each other. Hidden bidirectional tie.
+
+Heuristics:
+
+Layer map by path names: ui/, app/, domain/, infra/, tests/.
+
+Graph SCCs for cycles.
+
+Fan-in and fan-out counts.
+
+Barrel resolution: follow re-exports.
+
+Test paths: __tests__, spec, test.
+
+Expected Output Format:Readable. One line per edge problem. Group by package.
+
+Package: packages/cart
+  From → To: cart/domain/Price.ts → cart/ui/PriceWidget.tsx
+  Note: Upward dependency - domain imports ui
+  Confidence: High
+  Severity: Major
+
+Package: services/checkout
+  From → To: checkout/app/Service.ts → checkout/domain/Rules.ts → checkout/infra/Repo.ts → checkout/app/Service.ts
+  Note: 3-node import cycle across layers
+  Confidence: High
+  Severity: Major
+
+Package: web
+  From → To: src/app/router.ts → src/app/index.ts (via src/app/index.ts re-exports)
+  Note: Barrel hides self-cycle
+  Confidence: High
+  Severity: Major
+
+Package: core
+  From → To: core/src/index.ts → core/tests/helpers.ts
+  Note: Prod code imports test helper - test-to-prod leak
+  Confidence: High
+  Severity: Major
+
+Package: catalog
+  From → To: catalog/domain/models.ts → checkout/domain/models.ts
+  Note: Cross-context import - violates bounded context ADR-007
+  Confidence: Medium
+  Severity: Major
+
+Package: shared
+  From → To: shared/utils/index.ts → shared/utils/date.ts → shared/utils/index.ts
+  Note: Small cycle inside shared utils
+  Confidence: High
+  Severity: Moderate
+
+Package: api
+  From → To: api/infra/fs.ts → api/ui/upload.ts
+  Note: Server module imports browser-only code
+  Confidence: High
+  Severity: Major
+
+
+Output Rules:
+
+List every cycle and bad direction.
+
+Include package, From → To, short note, Confidence, Severity.
+
+Do not propose fixes. Do not change imports.
+
+Sort by package, then by path.
+
+Use exact paths and filenames you see.
+
+Files to Inspect:
+
+All src trees per package.
+
+Barrel files like index.ts or mod.rs.
+
+Test folders and mocks.
+
+ADRs that define layer and context rules.
+
+Severity:
+
+Major for cycles in core packages, layer violations, test-to-prod leaks, server importing browser code.
+
+Moderate for small cycles in non-core utils.
+
+Minor for hub modules only if no rule is broken.
+
+Confidence:
+
+High for explicit import edges and SCCs.
+
+Medium when a rule relies on ADR naming or folder hints.
+
+Low only if layers are undefined or mixed.
