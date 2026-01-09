@@ -1,0 +1,111 @@
+Goal:Propose small, high-impact improvements you didn’t ask for. Explain why briefly.
+
+Method:
+
+Read the current file and its direct neighbors.
+
+Note style, patterns, boundaries.
+
+Cross-check with earlier findings (if present).
+
+No execution. No edits.
+
+Look For:
+
+Clarity wins
+
+Rename for intent. Extract small pure helpers. Inline only when clearer.
+
+API edges
+
+Narrow public surface. Remove unused exports. Add input guards.
+
+Error policy
+
+Map errors to standard envelope. Add missing context IDs.
+
+Consistency
+
+Align naming, casing, logging levels, early-return style.
+
+Cohesion/coupling
+
+Move stray logic closer to data. Reduce fan-out.
+
+Data safety
+
+Add idempotency on writes. Add optimistic lock/version when needed.
+
+Caching hints
+
+Memo small pure calls. Add invalidation near writes.
+
+Perf nits
+
+Precompute constants. Avoid work in loops. Batch queries.
+
+Observability
+
+Add latency/error metrics at key path heads.
+
+Tests to add
+
+Edge case unit gaps. Contract tests on public functions.
+
+Docs touch-ups
+
+One-line docstring for non-obvious intent.
+
+Security rough spots
+
+Escape/validate inputs. Parameterize queries.
+
+Feature flags
+
+Guard risky new behavior behind an existing flag if present.
+
+Delete noise
+
+Remove dead code, TODOs past due, redundant comments.
+
+Output (human-readable, list):Keep it tight. One idea per bullet. Include benefit.
+
+Suggestions for: src/orders/OrderService.ts
+
+- Improve: Extract price normalization into pure helper
+  Why: Reused twice; easier to test; lowers coupling
+  Severity: Moderate
+  Confidence: High
+
+- Improve: Add idempotency check to POST /orders path
+  Why: Prevent duplicate charges on retry
+  Severity: Major
+  Confidence: Medium
+
+- Improve: Standardize error envelope on validation branch
+  Why: Aligns with policy; cleaner client handling
+  Severity: Moderate
+  Confidence: High
+
+- Improve: Add cache invalidation after updateItem()
+  Why: Avoid stale reads on product detail
+  Severity: Moderate
+  Confidence: Medium
+
+- Improve: Rename calc() → calculateOrderTotal()
+  Why: Intent clearer; matches naming in totals module
+  Severity: Minor
+  Confidence: High
+
+
+Rules:
+
+Suggestions only. No code.
+
+Short “Why”.
+
+Add Severity and Confidence.
+
+Stick to current file + direct neighbors.
+
+No overexplaining.
