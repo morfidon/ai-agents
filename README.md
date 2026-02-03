@@ -103,6 +103,7 @@ Each agent follows a consistent methodology:
 - **[UI/UX Bug – Interface Structure Agent](https://github.com/morfidon/ai-agents/blob/main/agents/phase-08-testing-documentation-maintenance/3.ui-ux-bug-interface-structure-agent.md)** - Checks accessibility, overlap, z-index, labels, and color contrast
 - **[Localization Bug – i18n/L10n Agent](https://github.com/morfidon/ai-agents/blob/main/agents/phase-08-testing-documentation-maintenance/4.localization-bug-i18n-l10n-agent.md)** - Detects hardcoded strings, missing locales, or format errors
 - **[Critical Unit Test Prioritization Agent](https://github.com/morfidon/ai-agents/blob/main/agents/phase-08-testing-documentation-maintenance/5.critical-unit-test-prioritization-agent.md)** - Ranks missing unit tests by criticality with impact rationale
+- **[Mobile UI/UX Critical Changes Agent](https://github.com/morfidon/ai-agents/blob/main/agents/phase-08-testing-documentation-maintenance/6.mobile-ui-ux-critical-changes-agent.md)** - Prioritizes critical mobile UI/UX improvements with rationale and creative suggestions
 
 ### [Phase 9 – Aggregation & Reporting](https://github.com/morfidon/ai-agents/blob/main/agents/different)
 *(Summarize all results for decision-making)*
