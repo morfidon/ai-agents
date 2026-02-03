@@ -102,6 +102,7 @@ Each agent follows a consistent methodology:
 - **[API Deprecation Lifecycle Agent](https://github.com/morfidon/ai-agents/blob/main/agents/phase-08-testing-documentation-maintenance/3.api-deprecation-lifecycle-agent.md)** - Ensures APIs evolve safely with proper deprecation
 - **[UI/UX Bug – Interface Structure Agent](https://github.com/morfidon/ai-agents/blob/main/agents/phase-08-testing-documentation-maintenance/3.ui-ux-bug-interface-structure-agent.md)** - Checks accessibility, overlap, z-index, labels, and color contrast
 - **[Localization Bug – i18n/L10n Agent](https://github.com/morfidon/ai-agents/blob/main/agents/phase-08-testing-documentation-maintenance/4.localization-bug-i18n-l10n-agent.md)** - Detects hardcoded strings, missing locales, or format errors
+- **[Critical Unit Test Prioritization Agent](https://github.com/morfidon/ai-agents/blob/main/agents/phase-08-testing-documentation-maintenance/5.critical-unit-test-prioritization-agent.md)** - Ranks missing unit tests by criticality with impact rationale
 
 ### [Phase 9 – Aggregation & Reporting](https://github.com/morfidon/ai-agents/blob/main/agents/different)
 *(Summarize all results for decision-making)*
