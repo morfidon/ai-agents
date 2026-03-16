@@ -20,17 +20,6 @@ Instead of building a generic AI assistant, this repository focuses on **very na
 
 Think of them as **automated code reviewers**.
 
-## How It Works
-
-Each agent follows a consistent methodology:
-- **Goal**: Clear objective of what the agent analyzes
-- **Method**: Systematic approach to examining code and artifacts
-- **What to Look For**: Specific patterns and issues to identify
-- **Expected Output Format**: Structured, readable findings
-- **Output Rules**: Guidelines for reporting results
-- **Severity & Confidence**: Framework for prioritizing findings
-
-
 ## Phases & Agents
 
 ### [Phase 1 – Core Code Integrity](https://github.com/morfidon/ai-agents/blob/main/agents/phase-01-core-code-integrity)
@@ -128,6 +117,16 @@ Each agent follows a consistent methodology:
 ## Usage
 
 Each agent is designed to be run independently or as part of a comprehensive audit. They follow a **read-only** approach - they analyze code and artifacts without making changes, providing detailed reports that developers can use to prioritize improvements.
+
+## How It Works
+
+Each agent follows a consistent methodology:
+- **Goal**: Clear objective of what the agent analyzes
+- **Method**: Systematic approach to examining code and artifacts
+- **What to Look For**: Specific patterns and issues to identify
+- **Expected Output Format**: Structured, readable findings
+- **Output Rules**: Guidelines for reporting results
+- **Severity & Confidence**: Framework for prioritizing findings
 
 ### Key Principles
 
