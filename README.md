@@ -1,10 +1,24 @@
-# AI Agents Repository
+# AI Agents for Codebase Auditing
 
-A comprehensive collection of specialized AI agents designed to systematically analyze, audit, and improve software projects across multiple dimensions of quality, security, and maintainability.
+A collection of **50+ specialized AI agents** that analyze software repositories and help you find:
 
-## Overview
+- security vulnerabilities
+- architecture smells
+- testing gaps
+- documentation drift
+- maintainability risks
 
-This repository contains **50+ specialized agents** organized into **10 phases** that cover the entire software development lifecycle. Each agent is designed to identify specific issues, risks, and improvement opportunities without modifying code - they provide detailed analysis and reporting to help developers make informed decisions.
+These agents are organized into **10 analysis phases** and are designed to **review code, not modify it**.
+
+They generate structured findings so you can spot problems faster and decide what to fix next.
+
+## What this is NOT
+
+This project is **not another agent framework**.
+
+Instead of building a generic AI assistant, this repository focuses on **very narrow agents** that each perform a specific analysis on a software project.
+
+Think of them as **automated code reviewers**.
 
 ## How It Works
 
@@ -15,6 +29,7 @@ Each agent follows a consistent methodology:
 - **Expected Output Format**: Structured, readable findings
 - **Output Rules**: Guidelines for reporting results
 - **Severity & Confidence**: Framework for prioritizing findings
+
 
 ## Phases & Agents
 
@@ -133,6 +148,8 @@ Each agent is designed to be run independently or as part of a comprehensive aud
 ## Contributing
 
 This repository is designed as a comprehensive toolkit for software quality analysis. Each agent is self-contained with clear documentation and can be extended or customized for specific project needs.
+
+⭐ If you find this project useful, consider starring the repository.
 
 ---
 
