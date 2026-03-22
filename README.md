@@ -1,6 +1,6 @@
 # AI Agents for Codebase Auditing
 
-A collection of **50+ specialized AI agents** that analyze software repositories and help you find:
+**50+ specialized AI agents** that analyze repos and help you find:
 
 - security vulnerabilities
 - architecture smells
@@ -16,7 +16,7 @@ They generate structured findings so you can spot problems faster and decide wha
 
 This project is **not another agent framework**.
 
-Instead of building a generic AI assistant, this repository focuses on **very narrow agents** that each perform a specific analysis on a software project.
+Instead of building a generic AI assistant, this repo focuses on **very narrow agents** that each perform a specific analysis on a project.
 
 Think of them as **automated code reviewers**.
 
