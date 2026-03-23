@@ -1,0 +1,84 @@
+# Bohrbug – Deterministic Failure Agent
+
+## Goal
+List code that will always fail under a specific condition. No edits. No execution.
+
+## Method
+- Read all source files.
+- Inspect guards, switch cases, range checks, and validators.
+- Flag rules that make valid input impossible or certain inputs always fail.
+- Group by file and function.
+
+## What to Look For
+- Missing default branches
+  - switch or match without a safe default.
+- Float equality checks
+  - == on floating points for logic or validation.
+- Overly strict regex
+  - Patterns that reject known valid formats.
+- Off-by-one bounds
+  - i < n-1 where i == n-1 is valid.
+- Contradictory predicates
+  - x > 10 and later x < 5 in the same path.
+- Impossible combined constraints
+  - Requires A and not A together.
+- Unchecked fallthrough assumptions
+  - Branch assumes previous check already handled a case, but it didn’t.
+- Null-intolerant paths
+  - Validation requires non-null, later code assumes null allowed.
+- Type narrowing traps
+  - Narrowing removes a real subtype that appears in data.
+- Hard-coded locales or encodings
+  - Validation tied to a single locale that rejects others.
+- Unit mismatch
+  - Compares seconds with milliseconds without conversion.
+- Closed sets that should be open
+  - Enum list missing real-world value that occurs.
+
+## Expected Output Format
+Readable. One line per finding. Grouped by file and function.
+
+File: src/validation/user.ts
+  - Function: isValidPhone()
+    Deterministic Failure: Regex only allows 10 digits, rejects valid international numbers
+    Confidence: High
+    Severity: Major
+
+File: server/orders/rules.py
+  - Function: withinLimit()
+    Deterministic Failure: Uses amount == 100.0 for boundary pass on float
+    Confidence: High
+    Severity: Major
+
+File: app/core/router.java
+  - Method: route()
+    Deterministic Failure: Switch on type lacks default branch
+    Confidence: High
+    Severity: Major
+
+File: src/math/range.go
+  - Func: InRange
+    Deterministic Failure: Upper bound exclusive but docs claim inclusive
+    Confidence: Medium
+    Severity: Major
+
+File: api/checks/invoice.rb
+  - Method: validate_currency
+    Deterministic Failure: Enum missing 'PLN' which appears in fixtures
+    Confidence: High
+    Severity: Major
+
+## Output Rules
+- List every deterministic failure you find.
+- Include file, function, short failure text, confidence, and severity.
+- Do not propose patches. Do not change code.
+- Sort by file path, then by line if known.
+- Use exact identifiers from code and config.
+
+## Severity
+Major – predictable, repeatable failure when the trigger condition appears.
+
+## Confidence
+- High for explicit patterns like missing defaults, float equality, or narrow regex.
+- Medium when based on docs or comments vs code.
+- Low only when intent is unclear.
