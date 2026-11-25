@@ -114,22 +114,19 @@ Think of them as **automated code reviewers**.
 
 - **[Audit Orchestrator Agent](https://github.com/morfidon/ai-agents/blob/main/agents/different/1.commit-agent.md)** - Collects all findings, deduplicates overlaps, ranks by severity and confidence
 
-## Spare Tokens
+### [Spare Tokens](agents/spare-tokens)
 
-Have spare tokens and no task queued? Start with [`find-next-improvement`](skills/spare-tokens/find-next-improvement/SKILL.md). It inspects your project, ranks up to three investigations by estimated percentage fit, and runs the highest-ranked one. The report shows the alternatives, why the winner fit, and what it found.
+*(Use spare AI capacity for a focused project investigation)*
 
-Try asking: “I have spare tokens. Use `find-next-improvement` for a deep pass on this repo.”
+- **[Find Next Improvement Agent](agents/spare-tokens/1.find-next-improvement-agent.md)** - Ranks up to three evidence-backed investigations by percentage fit and runs the best one
+- **[State Machine Review Agent](agents/spare-tokens/2.state-machine-review-agent.md)** - Checks state transitions, retries, resets, and late callbacks
+- **[Experience Walkthrough Agent](agents/spare-tokens/3.experience-walkthrough-agent.md)** - Finds friction in a UI, API, CLI, or MCP task
+- **[Codebase Maintenance Agent](agents/spare-tokens/4.codebase-maintenance-agent.md)** - Suggests narrow refactors with evidence and verification steps
+- **[Feature Exploration Agent](agents/spare-tokens/5.feature-exploration-agent.md)** - Sketches distinct directions for a product opportunity
+- **[Formal Verification Agent](agents/spare-tokens/6.formal-verification-agent.md)** - Checks one correctness property within a bounded model
+- **[Security Review Agent](agents/spare-tokens/7.security-review-agent.md)** - Reviews an authorized source boundary for defensive hardening
 
-| Skill | What you get |
-| --- | --- |
-| [`state-machine-review`](skills/spare-tokens/state-machine-review/SKILL.md) | Incorrect or unverified transitions in a workflow |
-| [`experience-walkthrough`](skills/spare-tokens/experience-walkthrough/SKILL.md) | Friction in a common UI, API, CLI, or MCP task |
-| [`codebase-maintenance`](skills/spare-tokens/codebase-maintenance/SKILL.md) | Small refactors backed by concrete code evidence |
-| [`feature-exploration`](skills/spare-tokens/feature-exploration/SKILL.md) | Sketches and trade-offs for a product opportunity |
-| [`formal-verification`](skills/spare-tokens/formal-verification/SKILL.md) | A bounded check of a critical correctness property |
-| [`security-review`](skills/spare-tokens/security-review/SKILL.md) | A defensive source review with remediation guidance |
-
-Use any skill directly when you have a focus in mind. Open its `SKILL.md` and give it to your coding agent with the project path and an optional effort limit.
+When you have spare tokens, give your coding agent the Spare Tokens folder and point it to the project you want reviewed. Try asking “I have spare tokens. Run the Find Next Improvement Agent on this repo.” Start with a specific agent when you already know what you want to investigate.
 
 ## Usage
 
