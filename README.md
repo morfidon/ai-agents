@@ -116,7 +116,7 @@ Think of them as **automated code reviewers**.
 
 ## Spare Tokens
 
-Have spare tokens and no task queued? Start with [`find-next-improvement`](skills/spare-tokens/find-next-improvement/SKILL.md). It inspects your project, picks one investigation that fits your budget, and returns an evidence-based report.
+Have spare tokens and no task queued? Start with [`find-next-improvement`](skills/spare-tokens/find-next-improvement/SKILL.md). It inspects your project, ranks up to three investigations by estimated percentage fit, and runs the highest-ranked one. The report shows the alternatives, why the winner fit, and what it found.
 
 Try asking: “I have spare tokens. Use `find-next-improvement` for a deep pass on this repo.”
 
