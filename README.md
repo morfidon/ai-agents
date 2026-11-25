@@ -114,6 +114,20 @@ Think of them as **automated code reviewers**.
 
 - **[Audit Orchestrator Agent](https://github.com/morfidon/ai-agents/blob/main/agents/different/1.commit-agent.md)** - Collects all findings, deduplicates overlaps, ranks by severity and confidence
 
+### [Spare Tokens](agents/spare-tokens)
+
+*(Use spare AI capacity for a focused project investigation)*
+
+- **[Find Next Improvement Agent](agents/spare-tokens/1.find-next-improvement-agent.md)** - Ranks up to three evidence-backed investigations by percentage fit and runs the best one
+- **[State Machine Review Agent](agents/spare-tokens/2.state-machine-review-agent.md)** - Checks state transitions, retries, resets, and late callbacks
+- **[Experience Walkthrough Agent](agents/spare-tokens/3.experience-walkthrough-agent.md)** - Finds friction in a UI, API, CLI, or MCP task
+- **[Codebase Maintenance Agent](agents/spare-tokens/4.codebase-maintenance-agent.md)** - Suggests narrow refactors with evidence and verification steps
+- **[Feature Exploration Agent](agents/spare-tokens/5.feature-exploration-agent.md)** - Sketches distinct directions for a product opportunity
+- **[Formal Verification Agent](agents/spare-tokens/6.formal-verification-agent.md)** - Checks one correctness property within a bounded model
+- **[Security Review Agent](agents/spare-tokens/7.security-review-agent.md)** - Reviews an authorized source boundary for defensive hardening
+
+When you have spare tokens, give your coding agent the Spare Tokens folder and point it to the project you want reviewed. Try asking “I have spare tokens. Run the Find Next Improvement Agent on this repo.” Start with a specific agent when you already know what you want to investigate.
+
 ## Usage
 
 Each agent is designed to be run independently or as part of a comprehensive audit. They follow a **read-only** approach - they analyze code and artifacts without making changes, providing detailed reports that developers can use to prioritize improvements.
