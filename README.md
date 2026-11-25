@@ -114,6 +114,23 @@ Think of them as **automated code reviewers**.
 
 - **[Audit Orchestrator Agent](https://github.com/morfidon/ai-agents/blob/main/agents/different/1.commit-agent.md)** - Collects all findings, deduplicates overlaps, ranks by severity and confidence
 
+## Spare Tokens
+
+Have spare tokens and no task queued? Start with [`find-next-improvement`](skills/spare-tokens/find-next-improvement/SKILL.md). It inspects your project, picks one investigation that fits your budget, and returns an evidence-based report.
+
+Try asking: “I have spare tokens. Use `find-next-improvement` for a deep pass on this repo.”
+
+| Skill | What you get |
+| --- | --- |
+| [`state-machine-review`](skills/spare-tokens/state-machine-review/SKILL.md) | Incorrect or unverified transitions in a workflow |
+| [`experience-walkthrough`](skills/spare-tokens/experience-walkthrough/SKILL.md) | Friction in a common UI, API, CLI, or MCP task |
+| [`codebase-maintenance`](skills/spare-tokens/codebase-maintenance/SKILL.md) | Small refactors backed by concrete code evidence |
+| [`feature-exploration`](skills/spare-tokens/feature-exploration/SKILL.md) | Sketches and trade-offs for a product opportunity |
+| [`formal-verification`](skills/spare-tokens/formal-verification/SKILL.md) | A bounded check of a critical correctness property |
+| [`security-review`](skills/spare-tokens/security-review/SKILL.md) | A defensive source review with remediation guidance |
+
+Use any skill directly when you have a focus in mind. Open its `SKILL.md` and give it to your coding agent with the project path and an optional effort limit.
+
 ## Usage
 
 Each agent is designed to be run independently or as part of a comprehensive audit. They follow a **read-only** approach - they analyze code and artifacts without making changes, providing detailed reports that developers can use to prioritize improvements.
